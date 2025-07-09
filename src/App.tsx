@@ -494,6 +494,7 @@ function TVScene() {
             height={200}
             autoPlay
             muted
+            preload="auto"
             style={{ borderRadius: '1rem', background: '#000', position: 'relative', zIndex: 2 }}
           />
         ) : isVideo ? (
@@ -505,6 +506,7 @@ function TVScene() {
             controls={false}
             autoPlay
             loop
+            preload="auto"
             style={{ borderRadius: '1rem', background: '#000', position: 'relative', zIndex: 2 }}
           />
         ) : (
