@@ -1,3 +1,73 @@
+// --- Live TV Section ---
+const LIVE_CHANNELS = [
+  {
+    name: 'Al Jazeera English',
+    url: 'https://www.youtube.com/embed/gCNeDWCI0vo?si=PRCtVWvcr3ZC_IKZ',
+    type: 'youtube',
+  },
+  {
+    name: 'DW News',
+    url: 'https://www.youtube.com/embed/LuKwFajn37U?si=G-KnvxUhv5La4A1b',
+    type: 'youtube',
+  },
+  {
+    name: 'France 24 English',
+    url: 'https://www.youtube.com/embed/Ap-UM1O9RBU?si=w91yQ7PPZ-KvmvuF',
+    type: 'youtube',
+  },
+  {
+    name: 'Sky News',
+    url: 'https://www.youtube.com/embed/YDvsBbKfLPA?si=ypVICjezPDqFUV08',
+    type: 'youtube',
+  },
+  {
+    name: 'ABC News (Australia)',
+    url: 'https://www.youtube.com/embed/vOTiJkg1voo?si=20lwHeNfFouzxWKZ',
+    type: 'youtube',
+  },
+];
+
+function LiveTVSection() {
+  const [selected, setSelected] = useState(0);
+  const channel = LIVE_CHANNELS[selected];
+  return (
+    <div className="live-tv-section" style={{ margin: '2.5rem auto', maxWidth: 600, width: '100%', textAlign: 'center' }}>
+      <h2 style={{ color: 'white', fontFamily: 'inherit', marginBottom: '1rem', fontSize: '2rem', letterSpacing: '1px' }}>Live TV</h2>
+      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
+        {LIVE_CHANNELS.map((c, i) => (
+          <button
+            key={c.name}
+            onClick={() => setSelected(i)}
+            style={{
+              background: i === selected ? '#ffb347' : '#222',
+              color: i === selected ? '#222' : '#fff',
+              border: '2px solid #ffb347',
+              borderRadius: '1.2rem',
+              padding: '0.4rem 1.1rem',
+              fontWeight: 600,
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              boxShadow: i === selected ? '0 2px 8px #ffb34755' : '0 2px 8px #0002',
+            }}
+          >
+            {c.name}
+          </button>
+        ))}
+      </div>
+      <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, borderRadius: '1.2rem', overflow: 'hidden', background: '#000' }}>
+        <iframe
+          title={channel.name}
+          src={channel.url}
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+          frameBorder="0"
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        />
+      </div>
+    </div>
+  );
+}
 // --- Vintage TV Controls ---
 function TVVintageControls({
   onBackward, onPlay, onPause, onForward, onMute, onVolUp, onVolDown, onPower, isMuted
@@ -23,7 +93,7 @@ function TVVintageControls({
               <line x1="5" y1="19" x2="5" y2="5"></line>
             </svg>
           </span>
-          <span className="button-label">Back</span>
+          <span className="button-label">-CH</span>
         </button>
         <button className="vintage-button" onClick={onPlay} title="Play">
           <span className="button-icon">
@@ -49,7 +119,7 @@ function TVVintageControls({
               <line x1="19" y1="5" x2="19" y2="19"></line>
             </svg>
           </span>
-          <span className="button-label">Forward</span>
+          <span className="button-label">+CH</span>
         </button>
       </div>
       {/* Desktop: right side */}
@@ -92,7 +162,7 @@ function TVVintageControls({
                 <line x1="5" y1="19" x2="5" y2="5"></line>
               </svg>
             </span>
-            <span className="button-label">Back</span>
+            <span className="button-label">-CH</span>
           </button>
           <button className="vintage-button" onClick={onPlay} title="Play">
             <span className="button-icon">
@@ -118,7 +188,7 @@ function TVVintageControls({
                 <line x1="19" y1="5" x2="19" y2="19"></line>
               </svg>
             </span>
-            <span className="button-label">Forward</span>
+            <span className="button-label">+CH</span>
           </button>
         </div>
         <div className="button-row">
@@ -154,21 +224,40 @@ function TVVintageControls({
     </>
   )
 }
+
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
+// Add Luckiest Guy font from Google Fonts
+const LUCKIEST_GUY_FONT_LINK = 'https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap';
+if (typeof document !== 'undefined' && !document.getElementById('luckiest-guy-font')) {
+  const link = document.createElement('link');
+  link.id = 'luckiest-guy-font';
+  link.rel = 'stylesheet';
+  link.href = LUCKIEST_GUY_FONT_LINK;
+  document.head.appendChild(link);
+}
 
+// Import local video files
+import bonk1 from './assets/bonk1.mp4';
+import bonk2 from './assets/bonk2.mp4';
+import bonk3 from './assets/bonk3.mp4';
+import bonk4 from './assets/bonk4.mp4';
+import bonk5 from './assets/bonk5.mp4';
+import bonk6 from './assets/bonk6.mp4';
+import bonk7 from './assets/bonk7.mp4';
+import staticVid from './assets/static.mp4';
 
-// Now supports both videos and images
 const MEME_MEDIA = [
-  { type: 'video', src: 'https://github.com/Nasabdul1/videolink/raw/refs/heads/main/tLVICRGwSDeuSIms.mp4' },
-  { type: 'video', src: 'https://github.com/Nasabdul1/videolink/raw/refs/heads/main/1GjQThSqxzr18zCb.mp4' },
-  { type: 'video', src: 'https://github.com/Nasabdul1/videolink/raw/refs/heads/main/zgMm0juHt4jOUMU4.mp4' },
-  { type: 'video', src: 'https://github.com/Nasabdul1/videolink/raw/refs/heads/main/K0rFykD_jiXcdlJw.mp4' },
-  { type: 'video', src: 'https://github.com/Nasabdul1/videolink/raw/refs/heads/main/39uTKEL0TisrlOya.mp4' },
-  { type: 'video', src: 'https://github.com/Nasabdul1/videolink/raw/refs/heads/main/R0TuhX9K5AqJEBKu%20(1).mp4' },
-  { type: 'video', src: 'https://github.com/Nasabdul1/videolink/raw/refs/heads/main/uwaX5VpRSwxvJCN4.mp4' },
-]
+  { type: 'video', src: bonk1 },
+  { type: 'video', src: bonk2 },
+  { type: 'video', src: bonk3 },
+  { type: 'video', src: bonk4 },
+  { type: 'video', src: bonk5 },
+  { type: 'video', src: bonk6 },
+  { type: 'video', src: bonk7 },
+  // Add more as you add more files
+];
 
 const TV_LINKS = [
   { label: 'letsbonk', url: 'https://letsbonk.fun/' },
@@ -178,7 +267,6 @@ const TV_LINKS = [
 ]
 
 function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
-  // const [done, setDone] = useState(false)
   useEffect(() => {
     const total = 1800 + 60 * 'Welcome to BonkTv'.length
     const timer = setTimeout(() => {
@@ -189,14 +277,29 @@ function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
 
   // Fluffy, animated, per-letter effect
   const text = 'Welcome to BonkTv'
+  // Responsive style: clamp font size, add padding, prevent overflow
+  const style: React.CSSProperties = {
+    fontFamily: 'Luckiest Guy, cursive',
+    fontWeight: 400,
+    fontSize: 'clamp(2.1rem, 7vw, 3.2rem)',
+    padding: '1.2rem 0.5rem 0.7rem 0.5rem',
+    width: '100%',
+    textAlign: 'center',
+    wordBreak: 'break-word',
+    lineHeight: 1.1,
+    boxSizing: 'border-box',
+    maxWidth: '100vw',
+    overflowWrap: 'anywhere',
+  };
   return (
-    <div className="bonk-welcome">
+    <div className="bonk-welcome" style={style}>
       {text.split('').map((char, i) => (
         <span
           key={i}
           className={char === 'o' || char === 'B' || char === 'T' ? 'fluffy' : ''}
           style={{
             animationDelay: `${i * 60}ms`,
+            display: 'inline-block',
           }}
         >
           {char === ' ' ? '\u00A0' : char}
@@ -279,14 +382,18 @@ function TVScene() {
   const current = MEME_MEDIA[mediaIdx]
   const isVideo = current.type === 'video'
 
-  // Controls
+  // Show static.mp4 for 350ms when switching
+  const showStaticAndSetIdx = (newIdx: number) => {
+    setIsStatic(true);
+    setTimeout(() => {
+      setMediaIdx(newIdx);
+      setIsStatic(false);
+    }, 350);
+  };
+
   const backward = () => {
     if (!isStatic) {
-      setIsPlaying(false);
-      setTimeout(() => {
-        setMediaIdx((i) => (i - 1 + MEME_MEDIA.length) % MEME_MEDIA.length);
-        setIsPlaying(true);
-      }, 0);
+      showStaticAndSetIdx((mediaIdx - 1 + MEME_MEDIA.length) % MEME_MEDIA.length);
     }
   }
   const play = () => {
@@ -303,11 +410,7 @@ function TVScene() {
   }
   const forward = () => {
     if (!isStatic) {
-      setIsPlaying(false);
-      setTimeout(() => {
-        setMediaIdx((i) => (i + 1) % MEME_MEDIA.length);
-        setIsPlaying(true);
-      }, 0);
+      showStaticAndSetIdx((mediaIdx + 1) % MEME_MEDIA.length);
     }
   }
   const mute = () => {
@@ -355,15 +458,15 @@ function TVScene() {
 
   useEffect(() => {
     if (isVideo && videoRef.current && !isStatic) {
+      // Force reload for instant switch
+      videoRef.current.load();
       if (isPlaying) {
-        // Force reload for instant switch
-        videoRef.current.load();
         videoRef.current.play();
       } else {
         videoRef.current.pause();
       }
     }
-  }, [isPlaying, mediaIdx, isStatic, isVideo])
+  }, [mediaIdx, isPlaying, isStatic, isVideo])
 
   // When switching to an image, always set isPlaying to true
   useEffect(() => {
@@ -372,7 +475,6 @@ function TVScene() {
 
   return (
     <div className="tv-scene" style={{ justifyContent: 'center', position: 'relative' }}>
-      {/* Desktop: vertical controls left/right of TV, Mobile: horizontal under TV */}
       <TVVintageControls
         onBackward={backward}
         onPlay={play}
@@ -384,8 +486,17 @@ function TVScene() {
         onPower={power}
         isMuted={isMuted}
       />
-      <TVAntique isStatic={isStatic}>
-        {isVideo ? (
+      <TVAntique isStatic={false}>
+        {isStatic ? (
+          <video
+            src={staticVid}
+            width={320}
+            height={200}
+            autoPlay
+            muted
+            style={{ borderRadius: '1rem', background: '#000', position: 'relative', zIndex: 2 }}
+          />
+        ) : isVideo ? (
           <video
             ref={videoRef}
             src={current.src}
@@ -419,6 +530,18 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(true)
   const [doorsOpen, setDoorsOpen] = useState(false)
 
+  // Inject Luckiest Guy font from Google Fonts on mount
+  useEffect(() => {
+    const id = 'luckiest-guy-font';
+    if (!document.getElementById(id)) {
+      const link = document.createElement('link');
+      link.id = id;
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap';
+      document.head.appendChild(link);
+    }
+  }, []);
+
   useEffect(() => {
     if (!showWelcome) {
       setTimeout(() => setDoorsOpen(true), 400)
@@ -427,9 +550,33 @@ function App() {
 
   return (
     <div>
-      {showWelcome && <WelcomeScreen onFinish={() => setShowWelcome(false)} />}
-      {!showWelcome && <DoorTransition open={doorsOpen} />}
-      {doorsOpen && <TVScene />}
+      <header style={{
+        width: '100%',
+        textAlign: 'center',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 100,
+        background: 'rgba(255,179,71,0.97)',
+        padding: '0.7rem 0 0.4rem 0',
+        fontFamily: 'Luckiest Guy, cursive',
+        fontWeight: 400,
+        fontSize: '2.2rem',
+        letterSpacing: '2px',
+        color: 'white',
+        boxShadow: '0 2px 12px #0002',
+        textShadow: '0 2px 8px #fff8',
+      }}>
+        BonkTv
+      </header>
+      <div style={{ paddingTop: '4.2rem' }}>
+        {showWelcome && <WelcomeScreen onFinish={() => setShowWelcome(false)} />}
+        {!showWelcome && <DoorTransition open={doorsOpen} />}
+        {doorsOpen && <>
+          <TVScene />
+          <LiveTVSection />
+        </>}
+      </div>
     </div>
   )
 }
