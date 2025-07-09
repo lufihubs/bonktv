@@ -1,3 +1,16 @@
+// Preload all meme and static videos for instant switching
+function VideoPreloader() {
+  return (
+    <div style={{ display: 'none' }}>
+      {/* Preload meme videos */}
+      {MEME_MEDIA.filter(m => m.type === 'video').map((m, i) => (
+        <video key={i} src={m.src} preload="auto" />
+      ))}
+      {/* Preload static transition */}
+      <video src={staticVid} preload="auto" />
+    </div>
+  );
+}
 // --- Live TV Section ---
 const LIVE_CHANNELS = [
   {
@@ -552,6 +565,7 @@ function App() {
 
   return (
     <div>
+      <VideoPreloader />
       <header style={{
         width: '100%',
         textAlign: 'center',
