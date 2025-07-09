@@ -157,11 +157,7 @@ function TVVintageControls({
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
-const BONK_LINKS = [
-  { label: 'Bonk Website', url: 'https://bonkcoin.com/' },
-  { label: 'Bonk Twitter', url: 'https://twitter.com/bonkcoin' },
-  { label: 'Bonk NFTs', url: 'https://magiceden.io/marketplace/bonk' },
-]
+
 
 // Now supports both videos and images
 const MEME_MEDIA = [
@@ -181,11 +177,10 @@ const TV_LINKS = [
 ]
 
 function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
-  const [done, setDone] = useState(false)
+  // const [done, setDone] = useState(false)
   useEffect(() => {
     const total = 1800 + 60 * 'Welcome to BonkTv'.length
     const timer = setTimeout(() => {
-      setDone(true)
       setTimeout(onFinish, 400)
     }, total)
     return () => clearTimeout(timer)
