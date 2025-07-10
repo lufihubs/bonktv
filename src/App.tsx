@@ -1,3 +1,32 @@
+import hitGif from './assets/hit.gif';
+// Animated Bonk (hit.gif) popup at bottom right
+function BonkHitPopup({ trigger }: { trigger: any }) {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (trigger) {
+      setShow(true);
+      const t = setTimeout(() => setShow(false), 900);
+      return () => clearTimeout(t);
+    }
+  }, [trigger]);
+  return show ? (
+    <img
+      src={hitGif}
+      alt="Bonk!"
+      style={{
+        position: 'fixed',
+        right: 16,
+        bottom: 16,
+        width: 90,
+        height: 90,
+        zIndex: 9999,
+        pointerEvents: 'none',
+        animation: 'bonk-pop 0.9s cubic-bezier(.4,2,.6,1)'
+      }}
+      className="bonk-hit-popup"
+    />
+  ) : null;
+}
 // Preload all meme and static videos for instant switching
 function VideoPreloader() {
   return (
@@ -396,6 +425,7 @@ function TVScene() {
   const [isPlaying, setIsPlaying] = useState(true)
   const [isMuted, setIsMuted] = useState(false)
   const [isStatic, setIsStatic] = useState(false)
+  const [bonkTrigger, setBonkTrigger] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const current = MEME_MEDIA[mediaIdx]
@@ -410,42 +440,50 @@ function TVScene() {
     }, 350);
   };
 
+  const triggerBonk = () => setBonkTrigger(t => t + 1);
   const backward = () => {
     if (!isStatic) {
       showStaticAndSetIdx((mediaIdx - 1 + MEME_MEDIA.length) % MEME_MEDIA.length);
+      triggerBonk();
     }
   }
   const play = () => {
     if (!isStatic && isVideo && videoRef.current) {
       videoRef.current.play();
       setIsPlaying(true)
+      triggerBonk();
     }
   }
   const pause = () => {
     if (!isStatic && isVideo && videoRef.current) {
       videoRef.current.pause();
       setIsPlaying(false)
+      triggerBonk();
     }
   }
   const forward = () => {
     if (!isStatic) {
       showStaticAndSetIdx((mediaIdx + 1) % MEME_MEDIA.length);
+      triggerBonk();
     }
   }
   const mute = () => {
     if (!isStatic && isVideo && videoRef.current) {
       videoRef.current.muted = !videoRef.current.muted;
       setIsMuted(videoRef.current.muted)
+      triggerBonk();
     }
   }
   const volUp = () => {
     if (!isStatic && isVideo && videoRef.current) {
       const v = Math.min(1, videoRef.current.volume + 0.1); videoRef.current.volume = v
+      triggerBonk();
     }
   }
   const volDown = () => {
     if (!isStatic && isVideo && videoRef.current) {
       const v = Math.max(0, videoRef.current.volume - 0.1); videoRef.current.volume = v
+      triggerBonk();
     }
   }
   const power = () => {
@@ -457,6 +495,7 @@ function TVScene() {
       }
       setIsPlaying(false);
       setIsStatic(true);
+      triggerBonk();
     } else {
       // Turn on: go to first media and play (if video)
       setMediaIdx(0);
@@ -468,6 +507,7 @@ function TVScene() {
         }
         setIsPlaying(true);
       }, 100);
+      triggerBonk();
     }
   }
 
@@ -543,8 +583,13 @@ function TVScene() {
           <a className="tv-link" href={l.url} target="_blank" rel="noopener noreferrer" key={l.url}>{l.label}</a>
         ))}
       </div>
+      <BonkHitPopup trigger={bonkTrigger} />
     </div>
   )
+// Bonk hit popup animation
+const style = document.createElement('style');
+style.innerHTML = `@keyframes bonk-pop { 0% { transform: scale(0.7) rotate(-10deg); opacity: 0.2; } 30% { transform: scale(1.1) rotate(4deg); opacity: 1; } 60% { transform: scale(0.95) rotate(-2deg); opacity: 1; } 100% { transform: scale(0.7) rotate(0deg); opacity: 0; } }`;
+document.head.appendChild(style);
 }
 
 function App() {
