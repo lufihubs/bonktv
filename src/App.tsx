@@ -290,7 +290,7 @@ function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
 
   // Fluffy, animated, per-letter effect
   const text = 'Welcome to BonkTv'
-  // Responsive style: clamp font size, add padding, prevent overflow
+  // Responsive style: clamp font size, add padding, prevent overflow, break on words only
   const style: React.CSSProperties = {
     fontFamily: 'Luckiest Guy, cursive',
     fontWeight: 400,
@@ -298,24 +298,30 @@ function WelcomeScreen({ onFinish }: { onFinish: () => void }) {
     padding: '1.2rem 0.5rem 0.7rem 0.5rem',
     width: '100%',
     textAlign: 'center',
-    wordBreak: 'break-word',
+    wordBreak: 'normal',
     lineHeight: 1.1,
     boxSizing: 'border-box',
     maxWidth: '100vw',
-    overflowWrap: 'anywhere',
+    overflowWrap: 'break-word', // break only at word boundaries
+    whiteSpace: 'normal',
   };
   return (
     <div className="bonk-welcome" style={style}>
-      {text.split('').map((char, i) => (
-        <span
-          key={i}
-          className={char === 'o' || char === 'B' || char === 'T' ? 'fluffy' : ''}
-          style={{
-            animationDelay: `${i * 60}ms`,
-            display: 'inline-block',
-          }}
-        >
-          {char === ' ' ? '\u00A0' : char}
+      {/* Render per-word spans for animation, but break only at spaces */}
+      {text.split(' ').map((word, wi, arr) => (
+        <span key={wi} style={{ display: 'inline-block', marginRight: wi < arr.length - 1 ? '0.4em' : 0 }}>
+          {word.split('').map((char, i) => (
+            <span
+              key={i}
+              className={char === 'o' || char === 'B' || char === 'T' ? 'fluffy' : ''}
+              style={{
+                animationDelay: `${(wi * 20 + i) * 60}ms`,
+                display: 'inline-block',
+              }}
+            >
+              {char}
+            </span>
+          ))}
         </span>
       ))}
     </div>
