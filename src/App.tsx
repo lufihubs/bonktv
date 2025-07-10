@@ -345,7 +345,7 @@ const MEME_MEDIA = [
 const TV_LINKS = [
   { label: 'letsbonk', url: 'https://letsbonk.fun/' },
   { label: 'livemint', url: 'https://t.me/letsbonknewmints' },
-  { label: 'twitter', url: 'https://x.com/bonktvonbonk' },
+  { label: 'twitter', url: 'https://x.com/Bonk__Tv' },
   { label: 'Bonk', url: 'https://bonkcoin.com/' },
 ]
 
