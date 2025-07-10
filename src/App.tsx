@@ -1,3 +1,44 @@
+// Easter egg: Mute + Forward + Backward = show SOL form (only once, global lock)
+const EGG_KEY = 'bonktv-egg-claimed';
+function EasterEggForm({ onClose }: { onClose: () => void }) {
+  const [sol, setSol] = useState('');
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sol.match(/^\w{32,44}$/)) {
+      setError('Invalid SOL address.');
+      return;
+    }
+    try {
+      // Send to bonktv64@gmail.com via Formspree (no backend needed)
+      await fetch('https://formspree.io/f/xjvngwqg', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sol }),
+      });
+      localStorage.setItem(EGG_KEY, '1');
+      setSent(true);
+      setTimeout(onClose, 1800);
+    } catch {
+      setError('Failed to send. Try again.');
+    }
+  };
+  return (
+    <div style={{ position: 'fixed', zIndex: 99999, right: 0, bottom: 0, left: 0, top: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <form onSubmit={handleSubmit} style={{ background: '#222', color: '#fff', borderRadius: 16, padding: 32, minWidth: 280, boxShadow: '0 4px 32px #0008', display: 'flex', flexDirection: 'column', gap: 16, fontFamily: 'inherit' }}>
+        <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>🥚 BonkTv Easter Egg</div>
+        {sent ? <div style={{ color: '#ffb347', fontWeight: 600 }}>SOL address sent! Good luck!</div> : <>
+          <label htmlFor="sol">Enter your SOL address:</label>
+          <input id="sol" value={sol} onChange={e => setSol(e.target.value)} style={{ fontSize: 18, padding: 8, borderRadius: 8, border: '1px solid #ffb347', outline: 'none' }} autoFocus required />
+          {error && <div style={{ color: 'red', fontSize: 15 }}>{error}</div>}
+          <button type="submit" style={{ background: '#ffb347', color: '#222', fontWeight: 700, border: 'none', borderRadius: 8, padding: '8px 0', fontSize: 18, cursor: 'pointer' }}>Claim Egg</button>
+        </>}
+        <button type="button" onClick={onClose} style={{ background: 'none', color: '#fff', border: 'none', fontSize: 15, marginTop: 8, cursor: 'pointer', textDecoration: 'underline' }}>Close</button>
+      </form>
+    </div>
+  );
+}
 import hitGif from './assets/hit.gif';
 // Animated Bonk (hit.gif) popup at bottom right
 function BonkHitPopup({ trigger }: { trigger: any }) {
@@ -426,6 +467,10 @@ function TVScene() {
   const [isMuted, setIsMuted] = useState(false)
   const [isStatic, setIsStatic] = useState(false)
   const [bonkTrigger, setBonkTrigger] = useState(0);
+  const [eggOpen, setEggOpen] = useState(false);
+  const [eggError, setEggError] = useState('');
+  // Easter egg sequence state
+  const eggSeq = useRef<string[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const current = MEME_MEDIA[mediaIdx]
@@ -441,10 +486,24 @@ function TVScene() {
   };
 
   const triggerBonk = () => setBonkTrigger(t => t + 1);
+  // Easter egg: Mute + Forward + Backward
+  const checkEgg = (action: string) => {
+    eggSeq.current.push(action);
+    if (eggSeq.current.length > 3) eggSeq.current.shift();
+    if (eggSeq.current.join(',') === 'mute,forward,backward') {
+      if (localStorage.getItem(EGG_KEY)) {
+        setEggError('Sorry, egg claimed by a degen. Be fast next time!');
+      } else {
+        setEggOpen(true);
+      }
+      eggSeq.current = [];
+    }
+  };
   const backward = () => {
     if (!isStatic) {
       showStaticAndSetIdx((mediaIdx - 1 + MEME_MEDIA.length) % MEME_MEDIA.length);
       triggerBonk();
+      checkEgg('backward');
     }
   }
   const play = () => {
@@ -465,6 +524,7 @@ function TVScene() {
     if (!isStatic) {
       showStaticAndSetIdx((mediaIdx + 1) % MEME_MEDIA.length);
       triggerBonk();
+      checkEgg('forward');
     }
   }
   const mute = () => {
@@ -472,6 +532,7 @@ function TVScene() {
       videoRef.current.muted = !videoRef.current.muted;
       setIsMuted(videoRef.current.muted)
       triggerBonk();
+      checkEgg('mute');
     }
   }
   const volUp = () => {
@@ -584,6 +645,15 @@ function TVScene() {
         ))}
       </div>
       <BonkHitPopup trigger={bonkTrigger} />
+      {eggOpen && <EasterEggForm onClose={() => setEggOpen(false)} />}
+      {eggError && (
+        <div style={{ position: 'fixed', right: 0, bottom: 0, left: 0, top: 0, background: 'rgba(0,0,0,0.7)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#222', color: '#fff', borderRadius: 16, padding: 32, minWidth: 280, boxShadow: '0 4px 32px #0008', fontFamily: 'inherit', fontSize: 18, fontWeight: 600 }}>
+            {eggError}
+            <button onClick={() => setEggError('')} style={{ marginTop: 18, background: '#ffb347', color: '#222', border: 'none', borderRadius: 8, padding: '8px 18px', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   )
 // Bonk hit popup animation
