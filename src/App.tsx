@@ -41,7 +41,7 @@ function EasterEggForm({ onClose }: { onClose: () => void }) {
 }
 import hitGif from './assets/hit.gif';
 // Animated Bonk (hit.gif) popup at bottom right
-function BonkHitPopup({ trigger }: { trigger: any }) {
+function BonkHitPopup({ trigger }: { trigger: number }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     if (trigger) {
@@ -662,7 +662,81 @@ style.innerHTML = `@keyframes bonk-pop { 0% { transform: scale(0.7) rotate(-10de
 document.head.appendChild(style);
 }
 
-function App() {
+// ...existing code...
+
+// --- Bonk News Ticker ---
+import React from 'react';
+function BonkNewsTicker() {
+  // Shuffle headlines for fun, memoized only once
+  const shuffled = React.useMemo(() => {
+    const headlines = [
+      "BONK surges 420% after TV launch!",
+      "BREAKING: BonkDog wins cutest meme award",
+      "Solana devs spotted watching BonkTv!",
+      "Viewer #69 just bonked the TV!",
+      "Rumor: BonkDog to host next SNL?",
+      "BONK: The only TV that barks back!",
+      "Breaking: BonkDog found in Times Square!",
+      "BonkTv: Now with 100% more bonk!",
+      "BONK: Not financial advice, just vibes.",
+      'BonkDog: "I ate the remote!"',
+      "BONK: The meme that can't be muted!",
+      'BonkDog: "I prefer static over ads!"',
+      "BONK: Next stop, the moon!",
+      'BonkDog: "I only watch Live TV for the snacks!"',
+    ];
+    const arr = [...headlines];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, []);
+  // Repeat headlines for infinite scroll
+  const tickerText = shuffled.concat(shuffled).join('  |   ');
+  return (
+    <div style={{
+      position: 'fixed',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: 9999,
+      background: 'rgba(255,179,71,0.97)',
+      color: '#222',
+      fontFamily: 'Luckiest Guy, cursive',
+      fontWeight: 400,
+      fontSize: 'clamp(1.1rem, 2.8vw, 1.7rem)',
+      letterSpacing: '1px',
+      boxShadow: '0 -2px 12px #0002',
+      borderTop: '2.5px solid #fff7',
+      overflow: 'hidden',
+      height: '2.7rem',
+      display: 'flex',
+      alignItems: 'center',
+      userSelect: 'none',
+      pointerEvents: 'auto',
+    }}>
+      <div style={{
+        whiteSpace: 'nowrap',
+        display: 'inline-block',
+        animation: 'bonk-ticker 38s linear infinite',
+        paddingLeft: '100vw',
+        minWidth: '100%',
+      }}>
+        {tickerText}
+      </div>
+      {/* Add ticker animation keyframes if not present */}
+      <style>{`
+        @keyframes bonk-ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-100%); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+const App = () => {
   const [showWelcome, setShowWelcome] = useState(true)
   const [doorsOpen, setDoorsOpen] = useState(false)
 
@@ -706,7 +780,7 @@ function App() {
       }}>
         BonkTv
       </header>
-      <div style={{ paddingTop: '4.2rem' }}>
+      <div style={{ paddingTop: '4.2rem', paddingBottom: '2.7rem' }}>
         {showWelcome && <WelcomeScreen onFinish={() => setShowWelcome(false)} />}
         {!showWelcome && <DoorTransition open={doorsOpen} />}
         {doorsOpen && <>
@@ -714,8 +788,9 @@ function App() {
           <LiveTVSection />
         </>}
       </div>
+      <BonkNewsTicker />
     </div>
   )
 }
 
-export default App
+export default App;
