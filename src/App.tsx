@@ -12,7 +12,7 @@ function EasterEggForm({ onClose }: { onClose: () => void }) {
     }
     try {
       // Send to bonktv64@gmail.com via Formspree (no backend needed)
-      await fetch('https://formspree.io/f/xjvngwqg', {
+      await fetch('https://formspree.io/f/mdkdojzd', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sol }),
